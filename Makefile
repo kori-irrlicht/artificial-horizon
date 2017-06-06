@@ -11,4 +11,4 @@ resources/scss/%.css : resources/scss/%.scss
 all: $(OBJ) resources/main.js
 
 resources/main.js: $(GOPHERJS_SRC)
-	gopherjs build github.com/kori-irrlicht/artificial-horizon/client -o resources/main.js -m
+	gopherjs build github.com/kori-irrlicht/artificial-horizon/client -o resources/main.js 
