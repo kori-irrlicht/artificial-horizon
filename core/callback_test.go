@@ -15,8 +15,9 @@ type callBacker struct {
 	callback glfw.KeyCallback
 }
 
-func (cb *callBacker) SetKeyCallback(kb glfw.KeyCallback) {
+func (cb *callBacker) SetKeyCallback(kb glfw.KeyCallback) glfw.KeyCallback {
 	cb.callback = kb
+	return nil
 }
 
 func TestCallback(t *testing.T) {

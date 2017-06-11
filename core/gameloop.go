@@ -9,7 +9,6 @@ func GameLoop(g Game) {
 	currentTime := g.Now()
 	acc := 0 * time.Millisecond
 
-	logger.Debug("Starting loop")
 	for g.Running() {
 		newTime := g.Now()
 		diff := newTime.Sub(currentTime)

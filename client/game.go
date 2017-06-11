@@ -1,21 +1,30 @@
 package main
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/goxjs/gl"
 	"github.com/goxjs/glfw"
-	"github.com/kori-irrlicht/artificial-dream/core"
+	"github.com/kori-irrlicht/artificial-horizon/core"
 )
 
 var _ core.Game = &game{}
 
 type game struct {
-	window *glfw.Window
+	window     *glfw.Window
+	controller core.Controller
 }
 
 func (g *game) Update() {}
-func (g *game) Input()  {}
+func (g *game) Input() {
+	if g.controller.IsDown(KeyDown) {
+		fmt.Println("Down")
+	}
+	if g.controller.IsDown(KeyUp) {
+		fmt.Println("Up")
+	}
+}
 func (g *game) Render() {
 	gl.Clear(gl.COLOR_BUFFER_BIT)
 
@@ -48,5 +57,15 @@ func newGame() (core.Game, error) {
 	gl.Clear(gl.COLOR_BUFFER_BIT)
 
 	game.window = window
+
+	kcm, _ := core.NewKeyCallbackManager(window)
+	mapping := core.KeyboardMapping{
+		{KeyUp, glfw.KeyW},
+		{KeyDown, glfw.KeyS},
+		{KeyLeft, glfw.KeyA},
+		{KeyRight, glfw.KeyD},
+	}
+	game.controller, _ = core.NewKeyboardController(kcm, mapping)
+
 	return game, nil
 }

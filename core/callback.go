@@ -9,7 +9,7 @@ import (
 type KeyCallback func(w *glfw.Window, key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) bool
 
 type SetKeyCallbacker interface {
-	SetKeyCallback(glfw.KeyCallback)
+	SetKeyCallback(glfw.KeyCallback) glfw.KeyCallback
 }
 
 type KeyCallbackManager interface {
