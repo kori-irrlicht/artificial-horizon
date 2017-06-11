@@ -20,31 +20,42 @@ func (cb *callBacker) SetKeyCallback(kb glfw.KeyCallback) {
 }
 
 func TestCallback(t *testing.T) {
-	Convey("Clear callback array", t, func() {
-		keyCallbacks = make([]KeyCallback, 0)
+	Convey("Init Keycallback with nil ", t, func() {
+		kc, err := NewKeyCallbackManager(nil)
+		Convey("Should return nil and an error", func() {
+			So(kc, ShouldBeNil)
+			So(err, ShouldNotBeNil)
+		})
+	})
+
+	Convey("Init Keycallback with valid parameter", t, func() {
+		cb := &callBacker{}
+		kc, err := NewKeyCallbackManager(cb)
+		Convey("Should create new manager and return no error", func() {
+			So(kc, ShouldNotBeNil)
+			So(err, ShouldBeNil)
+		})
 		Convey("Adding a callback", func() {
-			err := AddKeyCallback(callback)
+			err := kc.AddKeyCallback(callback)
 			Convey("keyCallbacks should contain the function", func() {
-				So(len(keyCallbacks), ShouldEqual, 1)
-				So(keyCallbacks[0], ShouldEqual, callback)
+				So(len(kc.keyCallbacks), ShouldEqual, 1)
+				So(kc.keyCallbacks[0], ShouldEqual, callback)
 				So(err, ShouldBeNil)
 			})
 		})
 		Convey("Adding nil to callback", func() {
-			err := AddKeyCallback(nil)
+			err := kc.AddKeyCallback(nil)
 			Convey("keyCallbacks should be unchanged", func() {
-				So(len(keyCallbacks), ShouldEqual, 0)
+				So(len(kc.keyCallbacks), ShouldEqual, 0)
 				So(err, ShouldNotBeNil)
 			})
 		})
 
 		Convey("Initializing a new SetKeyCallbacker", func() {
-			cb := &callBacker{}
-			InitKeyCallback(cb)
 			So(cb.callback, ShouldNotBeNil)
 			Convey("Adding a callback", func() {
 				called := false
-				AddKeyCallback(func(w *glfw.Window, key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) bool {
+				kc.AddKeyCallback(func(w *glfw.Window, key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) bool {
 					called = true
 					return false
 				})
@@ -57,11 +68,11 @@ func TestCallback(t *testing.T) {
 			})
 			Convey("Adding two callbacks, first true, second false", func() {
 				amount := 0
-				AddKeyCallback(func(w *glfw.Window, key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) bool {
+				kc.AddKeyCallback(func(w *glfw.Window, key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) bool {
 					amount++
 					return true
 				})
-				AddKeyCallback(func(w *glfw.Window, key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) bool {
+				kc.AddKeyCallback(func(w *glfw.Window, key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) bool {
 					amount++
 					return false
 				})
@@ -74,11 +85,11 @@ func TestCallback(t *testing.T) {
 			})
 			Convey("Adding two callbacks, first false, second true", func() {
 				amount := 0
-				AddKeyCallback(func(w *glfw.Window, key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) bool {
+				kc.AddKeyCallback(func(w *glfw.Window, key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) bool {
 					amount++
 					return false
 				})
-				AddKeyCallback(func(w *glfw.Window, key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) bool {
+				kc.AddKeyCallback(func(w *glfw.Window, key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) bool {
 					amount++
 					return true
 				})
