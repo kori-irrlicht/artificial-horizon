@@ -8,10 +8,12 @@ import (
 )
 
 type testKeyCallbackManager struct {
+	kc         KeyCallback
 	registered bool
 }
 
-func (tkcm *testKeyCallbackManager) AddKeyCallback(KeyCallback) error {
+func (tkcm *testKeyCallbackManager) AddKeyCallback(kc KeyCallback) error {
+	tkcm.kc = kc
 	tkcm.registered = true
 	return nil
 }
@@ -30,6 +32,37 @@ func TestController(t *testing.T) {
 
 		Convey("It registers a new keycallback listener", func() {
 			So(kcm.registered, ShouldBeTrue)
+			Convey("The key is not pressed", func() {
+				So(kc.IsDown(testKey), ShouldBeFalse)
+			})
+			Convey("Pressing an unknown key", func() {
+				handled := kcm.kc(nil, 0, 0, glfw.Press, 0)
+				Convey("It shouldn't be handled", func() {
+					So(kc.IsDown(testKey), ShouldBeFalse)
+					So(handled, ShouldBeFalse)
+				})
+			})
+			Convey("Releasing an unknown key", func() {
+				handled := kcm.kc(nil, 0, 0, glfw.Release, 0)
+				Convey("It shouldn't be handled", func() {
+					So(handled, ShouldBeFalse)
+				})
+
+			})
+			Convey("Pressing the registered key", func() {
+				handled := kcm.kc(nil, glfw.Key4, 0, glfw.Press, 0)
+				Convey("It should be handled", func() {
+					So(kc.IsDown(testKey), ShouldBeTrue)
+					So(handled, ShouldBeTrue)
+				})
+				Convey("Releasing the registered key", func() {
+					handled := kcm.kc(nil, glfw.Key4, 0, glfw.Release, 0)
+					Convey("It should be handled", func() {
+						So(kc.IsDown(testKey), ShouldBeFalse)
+						So(handled, ShouldBeTrue)
+					})
+				})
+			})
 		})
 	})
 	Convey("Creating a new KeyboardController with invalid input", t, func() {
