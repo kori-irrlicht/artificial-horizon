@@ -30,7 +30,8 @@ func TestCallback(t *testing.T) {
 
 	Convey("Init Keycallback with valid parameter", t, func() {
 		cb := &callBacker{}
-		kc, err := NewKeyCallbackManager(cb)
+		kcm, err := NewKeyCallbackManager(cb)
+		kc := kcm.(*keyCallbackManager)
 		Convey("Should create new manager and return no error", func() {
 			So(kc, ShouldNotBeNil)
 			So(err, ShouldBeNil)

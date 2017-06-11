@@ -12,13 +12,16 @@ type SetKeyCallbacker interface {
 	SetKeyCallback(glfw.KeyCallback)
 }
 
-type KeyCallbackManager struct {
+type KeyCallbackManager interface {
+	AddKeyCallback(KeyCallback) error
+}
+type keyCallbackManager struct {
 	keyCallbacks []KeyCallback
 }
 
 // AddKeyCallback adds a KeyCallback
 // Returns an error if kb is nil
-func (kc *KeyCallbackManager) AddKeyCallback(kb KeyCallback) (err error) {
+func (kc *keyCallbackManager) AddKeyCallback(kb KeyCallback) (err error) {
 	if kb == nil {
 		return errors.New("Can't pass 'nil' to AddKeyCallback")
 	}
@@ -29,11 +32,11 @@ func (kc *KeyCallbackManager) AddKeyCallback(kb KeyCallback) (err error) {
 // InitKeyCallback adds a keycallback to the kb parameter
 // This callback calls every callback registered with AddKeyCallback until one
 // handles the event and returns true
-func NewKeyCallbackManager(kb SetKeyCallbacker) (kc *KeyCallbackManager, err error) {
+func NewKeyCallbackManager(kb SetKeyCallbacker) (KeyCallbackManager, error) {
 	if kb == nil {
 		return nil, errors.New("Can't pass 'nil' to NewKeyCallback")
 	}
-	kc = &KeyCallbackManager{}
+	kc := &keyCallbackManager{}
 	kb.SetKeyCallback(func(w *glfw.Window, key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) {
 		for _, cb := range kc.keyCallbacks {
 			if cb(w, key, scancode, action, mods) {
@@ -41,5 +44,5 @@ func NewKeyCallbackManager(kb SetKeyCallbacker) (kc *KeyCallbackManager, err err
 			}
 		}
 	})
-	return
+	return kc, nil
 }
