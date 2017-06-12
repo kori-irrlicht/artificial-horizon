@@ -11,7 +11,7 @@ import (
 func main() {
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("resources"))))
 
-	http.Handle("/echo", websocket.Handler(func(ws *websocket.Conn) {
+	http.Handle("/ws", websocket.Handler(func(ws *websocket.Conn) {
 		msg := make([]byte, 512)
 		n, err := ws.Read(msg)
 		if err != nil {
