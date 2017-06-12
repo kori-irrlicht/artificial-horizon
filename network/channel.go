@@ -7,6 +7,10 @@ import (
 	"time"
 )
 
+/*
+	// TODO: Implement later. currently not needed
+*/
+
 // channelConn is a channel-based connection
 // It can only be used, if client and server are running in the same process
 type channelConn struct{}
@@ -27,9 +31,7 @@ var newChannelConnections = make(chan *channelConn, 255)
 
 // DialChannel creates a new channel-based connection
 func DialChannel() (net.Conn, error) {
-	cc := &channelConn{}
-
-	return cc, nil
+	return nil, nil
 }
 
 // ListenChannel listens, if a new channel-based connection has been created`
