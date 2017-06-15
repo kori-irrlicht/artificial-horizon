@@ -7,6 +7,7 @@ import (
 	"github.com/goxjs/gl"
 	"github.com/goxjs/glfw"
 	"github.com/kori-irrlicht/artificial-horizon/core"
+	"github.com/kori-irrlicht/artificial-horizon/network"
 )
 
 var _ core.Game = &game{}
@@ -66,6 +67,13 @@ func newGame() (core.Game, error) {
 		{KeyRight, glfw.KeyD},
 	}
 	game.controller, _ = core.NewKeyboardController(kcm, mapping)
+
+	conn, err := network.Dial("127.0.0.1:42424", "http://localhost")
+	if err != nil {
+		return nil, err
+	}
+
+	conn.Write([]byte(`Hallo`))
 
 	return game, nil
 }
