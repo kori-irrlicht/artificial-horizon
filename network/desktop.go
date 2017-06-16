@@ -10,6 +10,6 @@ import "net"
 //
 // Connects to 'url + /udp', so only the base address is needed
 func Dial(url, origin string) (net.Conn, error) {
-	return net.Dial("udp", url+"/udp")
+	return net.Dial("udp", url)
 
 }

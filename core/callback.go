@@ -3,7 +3,7 @@ package core
 import (
 	"errors"
 
-	"github.com/goxjs/glfw"
+	"github.com/go-gl/glfw/v3.2/glfw"
 )
 
 type KeyCallback func(w *glfw.Window, key glfw.Key, scancode int, action glfw.Action, mods glfw.ModifierKey) bool

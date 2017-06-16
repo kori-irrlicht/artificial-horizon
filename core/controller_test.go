@@ -3,7 +3,7 @@ package core
 import (
 	"testing"
 
-	"github.com/goxjs/glfw"
+	"github.com/go-gl/glfw/v3.2/glfw"
 	. "github.com/smartystreets/goconvey/convey"
 )
 
