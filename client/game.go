@@ -73,12 +73,12 @@ func newGame() (core.Game, error) {
 	}
 	game.controller, _ = core.NewKeyboardController(kcm, mapping)
 
-	conn, err := network.Dial("127.0.0.1:42424", "http://localhost")
+	conn, err := network.NewConnection("127.0.0.1", "42425", "42426")
 	if err != nil {
-		return nil, err
+		panic(err)
 	}
 
-	conn.Write([]byte(`Hallo`))
+	conn.Tcp().Write([]byte("Hallo"))
 
 	return game, nil
 }
