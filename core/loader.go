@@ -3,7 +3,7 @@ package core
 type Type uint
 
 type Loader interface {
-	Load(string) error
+	Load(string) (interface{}, error)
 }
 
 type AssetManager interface {
@@ -22,5 +22,5 @@ type AssetManager interface {
 	// Wait waits until the resources has been loaded and writes the asset to
 	// the returned channel
 	// If there is no asset, an error will be returned
-	Wait(string, Type) (chan interface{}, error)
+	Wait(string, Type) chan interface{}
 }

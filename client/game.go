@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	_ "image/png"
-	"io/ioutil"
 	"log"
 	"time"
 
@@ -125,8 +124,18 @@ func newGame() (core.Game, error) {
 		-3.0, 1.0, 1.0, 1.0, 1.0,
 	}
 
-	vertexShader, err := ioutil.ReadFile("./shader/vertex.glsl")
-	fragmentShader, err := ioutil.ReadFile("./shader/fragment.glsl")
+	am := newAssetManager()
+	go func() {
+		err = am.Load("./shader/vertex.glsl", textAsset)
+		err = am.Load("./shader/fragment.glsl", textAsset)
+	}()
+	err = am.Load("./assets/square.png", textureAsset)
+
+	vertexShader := (<-am.Wait("./shader/vertex.glsl", textAsset)).([]byte)
+	fragmentShader := (<-am.Wait("./shader/fragment.glsl", textAsset)).([]byte)
+
+	//vertexShader, err := ioutil.ReadFile("./shader/vertex.glsl")
+	//fragmentShader, err := ioutil.ReadFile("./shader/fragment.glsl")
 
 	// Configure the vertex and fragment shaders
 	program, err := newProgram(string(vertexShader)+"\x00", string(fragmentShader)+"\x00")
@@ -157,7 +166,7 @@ func newGame() (core.Game, error) {
 	gl.BindFragDataLocation(program, 0, gl.Str("outputColor\x00"))
 
 	// Load the texture
-	game.texture, err = newTexture("./assets/square.png")
+	game.texture = (<-am.Wait("./assets/square.png", textureAsset)).(uint32)
 	if err != nil {
 		log.Fatalln(err)
 	}
