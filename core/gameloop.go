@@ -1,6 +1,8 @@
 package core
 
-import "time"
+import (
+	"time"
+)
 
 // GameLoop implements a fixed timestep gameloop
 func GameLoop(g Game) {
@@ -8,7 +10,6 @@ func GameLoop(g Game) {
 
 	currentTime := g.Now()
 	acc := 0 * time.Millisecond
-
 	for g.Running() {
 		newTime := g.Now()
 		diff := newTime.Sub(currentTime)
