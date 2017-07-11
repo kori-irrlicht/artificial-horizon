@@ -4,7 +4,12 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net"
+	"runtime"
 )
+
+func init() {
+	runtime.LockOSThread()
+}
 
 func main() {
 	ln, err := net.Listen("tcp", ":42425")
